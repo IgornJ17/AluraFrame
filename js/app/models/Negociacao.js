@@ -1,6 +1,6 @@
 class Negociacao {
     constructor(date, qtd, valor){
-        this._date = new Date(date.getTime());
+        this._date = new Date(date.ano, date.mes, date.dia);
         this._qtd = qtd;
         this._valor = valor;
         this._volume = this.qtd * this.valor;
