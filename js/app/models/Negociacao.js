@@ -1,3 +1,5 @@
+
+
 class Negociacao {
     constructor(date, qtd, valor){
         this._date = new Date(date.ano, date.mes, date.dia);

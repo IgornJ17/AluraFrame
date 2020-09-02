@@ -7,34 +7,35 @@ class NegociacaoController{
             data: selectElement("#data"),
             valor: selectElement("#valor")
         }
+        this.listNegoc = new ListaNegociacao();
         Object.freeze(this);
-    }
-
-    stringToDate(data){
-        var result;
-        let dado = data.value; 
-        let date = dado.split('-');
-
-        result = {
-            ano: parseInt(date[0]),
-            mes: parseInt(date[1]) - 1 ,
-            dia: parseInt(date[2])
-
-        }
-
-        return result;
     }
 
     adiciona(event){
         event.preventDefault()
 
-        let negociacao = new Negociacao(
-            this.stringToDate(this._dadosNegocio.data),
+        let dataTratada = DataHelpers.stringToDate(this._dadosNegocio.data);
+
+        let negociacao = this._makeNegociacao(dataTratada);
+        this.listNegoc.add(negociacao);
+        this._cleanForm();
+
+        console.log(this.listNegoc.negociacoes);
+    }
+
+    _cleanForm(){
+        this._dadosNegocio.qtd.value = 1;
+        this._dadosNegocio.data.value = '';
+        this._dadosNegocio.valor.value = 0.0;
+
+        this._dadosNegocio.data.focus();
+
+    }
+
+    _makeNegociacao(date){
+        return new Negociacao(
+            date,
             this._dadosNegocio.qtd.value,
-            this._dadosNegocio.valor.value
-        );
-
-        console.log(negociacao);
-
+            this._dadosNegocio.valor.value);
     }
 }
