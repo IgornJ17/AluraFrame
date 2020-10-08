@@ -7,7 +7,9 @@ class NegociacaoController{
             data: selectElement("#data"),
             valor: selectElement("#valor")
         }
-        this._listNegoc = new ListaNegociacao();
+        this._listNegoc = new ListaNegociacao(function(model){
+            this.ListaNegociacao.update(model);
+        }, this);
         this._listViewNegociacao = new NegociacoesView(selectElement('#ViewNegociacao'));
 
         this.ListaNegociacao.update();
@@ -26,7 +28,6 @@ class NegociacaoController{
         this._listNegoc.add(negociacao);
         this._cleanForm();
         this._mensagem.texto = "Negociacao adicionado com sucesso";
-        this.ListaNegociacao.update(this.ListaNegociacao);
         this._mensagemView.update(this._mensagem);
         console.log(this._listNegoc.negociacoes);
     }
@@ -45,5 +46,11 @@ class NegociacaoController{
             date,
             this._dadosNegocio.qtd.value,
             this._dadosNegocio.valor.value);
+    }
+
+    clearNegocicoes(){
+        this._listNegoc.flushList();
+        this._mensagem.texto = "Negociacoes apagadas com sucesso";
+        this._mensagemView.update(this._mensagem);
     }
 }
