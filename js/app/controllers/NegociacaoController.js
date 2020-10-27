@@ -7,9 +7,21 @@ class NegociacaoController{
             data: selectElement("#data"),
             valor: selectElement("#valor")
         }
-        this._listNegoc = new ListaNegociacao(function(model){
-            this.ListaNegociacao.update(model);
-        }, this);
+
+        let self = this;
+
+        this._listNegoc = new Proxy(new ListaNegociacao(), {
+            get(target, prop, receive){
+                
+                if(['add','flushList'].includes(prop) && typeof(target[prop]) == typeof(Function)){
+                    Reflect.apply(target[prop], target, arguments);
+                    self.ListaNegociacao.update(target);
+                }
+
+                return Reflect.get(target, prop, receive)
+            }
+        })
+      =
         this._listViewNegociacao = new NegociacoesView(selectElement('#ViewNegociacao'));
 
         this.ListaNegociacao.update();
