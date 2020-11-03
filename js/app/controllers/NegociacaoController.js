@@ -6,28 +6,16 @@ class NegociacaoController{
             qtd: selectElement("#quantidade"),
             data: selectElement("#data"),
             valor: selectElement("#valor")
-        }
+        };
 
-        let self = this;
+        this._listNegoc = new Bind(new ListaNegociacao(), 
+        new NegociacoesView(selectElement("#ViewNegociacao")), 
+        'add', 'flushList');
 
-        this._listNegoc = new Proxy(new ListaNegociacao(), {
-            get(target, prop, receive){
-                
-                if(['add','flushList'].includes(prop) && typeof(target[prop]) == typeof(Function)){
-                    Reflect.apply(target[prop], target, arguments);
-                    self.ListaNegociacao.update(target);
-                }
-
-                return Reflect.get(target, prop, receive)
-            }
-        })
-      =
-        this._listViewNegociacao = new NegociacoesView(selectElement('#ViewNegociacao'));
-
-        this.ListaNegociacao.update();
-        this._mensagem = new Mensagem();
-        this._mensagemView = new MensagemView(selectElement("data-mensagemView"))
-        this._mensagemView.update(this._mensagem);
+        this._mensagem = new Bind(new Mensagem(), 
+        new MensagemView(selectElement("data-mensagemView")),
+         'texto');
+        
         Object.freeze(this);
     }
 
@@ -40,8 +28,6 @@ class NegociacaoController{
         this._listNegoc.add(negociacao);
         this._cleanForm();
         this._mensagem.texto = "Negociacao adicionado com sucesso";
-        this._mensagemView.update(this._mensagem);
-        console.log(this._listNegoc.negociacoes);
     }
 
     _cleanForm(){
@@ -63,6 +49,5 @@ class NegociacaoController{
     clearNegocicoes(){
         this._listNegoc.flushList();
         this._mensagem.texto = "Negociacoes apagadas com sucesso";
-        this._mensagemView.update(this._mensagem);
     }
 }
