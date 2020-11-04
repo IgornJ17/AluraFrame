@@ -1,3 +1,5 @@
+import { Functions as Reqfunctions }  from "../helpers/modules_aux/functions-ajax";
+
 class NegociacaoController{
 
     constructor(){
@@ -28,6 +30,15 @@ class NegociacaoController{
         this._listNegoc.add(negociacao);
         this._cleanForm();
         this._mensagem.texto = "Negociacao adicionado com sucesso";
+    }
+
+    importNegoci(){
+        let xhr = new XMLHttpRequest(), negociacoesImport = Reqfunctions.requestServer(xhr);
+        negociacoesImport.map(obj => {
+            return new Negociacao(DateHelpers.stringToDate(obj.data), obj.quantidade, obj.valor)
+        }).forEach(negociacao => {
+            this._listNegoc.add(negociacao);
+        });
     }
 
     _cleanForm(){

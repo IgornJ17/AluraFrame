@@ -1,20 +1,16 @@
 class Bind{
     
     constructor(model, view, ...props){
-        
-        this.model = model;
-        this.props = props;
-    
-        let proxy = proxyCreate(view);
+        let proxy = Bind.proxyCreate(model, props, view);
         view.update;
         
         return proxy;
     }
     
     
-    static proxyCreate(view){
+    static proxyCreate(model, props, view){
         try{
-            ProxyFactory.create(this.model, this.props, (model) => view.update(model));
+            ProxyFactory.create(model, props, (model) => view.update(model));
         }
         catch(error){
             console.log("error ao criar a instancia")
