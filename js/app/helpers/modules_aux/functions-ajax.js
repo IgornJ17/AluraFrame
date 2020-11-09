@@ -1,23 +1,69 @@
 const Functions = {
-    requestServer: function(xhr){
-        xhr.open('GET', 'negociacoes/semana');
+    importServer: function(xhr){
 
-        xhr.onreadystatechange = function(){
-            let negociacaoResponse;
-            if(xhr.readyState == 4){
-                if(xhr.status == 200){
-                    negociacaoResponse = JSON.parse(xhr.responseText);
-                    return negociacaoResponse;
-                }
-                else{
-                    console.log("Erro na obtencao das negociacoes no servidor");
-                    console.log(xhr.responseText);
-
+        return new Promise( (resolve, reject) => {
+            xhr.open('GET', 'negociacoes/semana');
+    
+            xhr.onreadystatechange = function(){
+                if(xhr.readyState == 4){
+                    if(xhr.status == 200){
+                        resolve(JSON.parse(xhr.responseText).map(obj => {
+                            return new Negociacao(DateHelpers.stringToDate(obj.data), obj.quantidade, obj.valor)
+                        }));
+                    }else{
+                        console.log("Erro na obtencao das negociacoes no servidor");
+                        reject("Nao foi possivel obter as negociacoes");
+                    }
                 }
             }
-        }
+    
+            xhr.send();
+        })
 
-        xhr.send();
+    },
+
+    importServerAnterior: function(xhr){
+        
+        return new Promise( (resolve, reject) => {
+            xhr.open('GET', 'negociacoes/anterior');
+
+            xhr.onreadystatechange = function(){
+                if(xhr.readyState == 4){
+                    if(xhr.status == 200){
+                        resolve(JSON.parse(xhr.responseText).map(obj => {
+                            return new Negociacao(DateHelpers.stringToDate(obj.data), obj.quantidade, obj.valor)
+                        }));
+                    }else{
+                        console.log("Erro na obtencao das negociacoes no servidor");
+                        reject("Nao foi possivel obter as negociacoes");
+                    }
+                }
+            }
+
+            xhr.send();
+        }
+    },
+
+    importServerRetrasada: function(xhr){
+        
+        return new Promise( (resolve, reject) => {
+            xhr.open('GET', 'negociacoes/retrasada');
+    
+            xhr.onreadystatechange = function(){
+                if(xhr.readyState == 4){
+                    if(xhr.status == 200){
+                        resolve(JSON.parse(xhr.responseText).map(obj => {
+                            return new Negociacao(DateHelpers.stringToDate(obj.data), obj.quantidade, obj.valor)
+                        }));
+                    }else{
+                        console.log("Erro na obtencao das negociacoes no servidor");
+                        reject("Nao foi possivel obter as negociacoes");
+                    }
+                }
+            }
+            xhr.send();
+        })
+
     }
 
 }

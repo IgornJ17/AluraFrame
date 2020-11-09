@@ -1,4 +1,4 @@
-import { Functions as Reqfunctions }  from "../helpers/modules_aux/functions-ajax";
+import Functions, { Functions as Reqfunctions }  from "../helpers/modules_aux/functions-ajax";
 
 class NegociacaoController{
 
@@ -33,12 +33,25 @@ class NegociacaoController{
     }
 
     importNegoci(){
-        let xhr = new XMLHttpRequest(), negociacoesImport = Reqfunctions.requestServer(xhr);
-        negociacoesImport.map(obj => {
-            return new Negociacao(DateHelpers.stringToDate(obj.data), obj.quantidade, obj.valor)
-        }).forEach(negociacao => {
-            this._listNegoc.add(negociacao);
-        });
+        let xhr = new XMLHttpRequest();
+        Promise.all(
+            [
+                Functions.importServer(xhr),
+                Functions.importServerAnterior(xhr),
+                Functions.importServerRetrasada(xhr)
+            ]
+        ).then(
+            negociacoes => {
+                negociacoes.reduce( (newArray, originArray) => newArray.concat(originArray), [])
+                .forEach(negociacao => {
+                    this._listNegoc.add(negociacao);
+                    this._mensagem.texto = "Negociacoes semanais adicionadas com sucesso"
+                });
+            }
+        )
+        .catch(erro => this._mensagem.texto = erro)
+            
+    
     }
 
     _cleanForm(){
